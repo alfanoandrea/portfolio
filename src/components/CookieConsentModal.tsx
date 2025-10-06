@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import CookieConsent from "react-cookie-consent";
 import Link from "next/link";
 
 export default function CookieConsentModal() {

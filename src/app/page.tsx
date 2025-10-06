@@ -92,7 +92,7 @@ export default function Home() {
         return () => clearTimeout(timeout);
       }
     } else {
-      let charIndex = currentLine.length;
+      const charIndex = currentLine.length;
       if (charIndex < line.length) {
         const timeout = setTimeout(() => {
           setCurrentLine((prev) => prev + line[charIndex]);

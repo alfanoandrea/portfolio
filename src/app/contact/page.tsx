@@ -1,13 +1,10 @@
-// src/app/contact/page.tsx
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion"; // Importiamo Variants
 import { FaGithub, FaEnvelope, FaInstagram } from "react-icons/fa";
-import { useState } from "react";
-// Non è necessario importare React per la tipizzazione qui, 
-// ma lo facciamo per coerenza con la tua struttura.
-import React from 'react'; 
+import React, { useState } from "react"; // Importiamo React per la tipizzazione
 
+// Tipizzazione per lo stato del form
 interface FormData {
   name: string;
   email: string;
@@ -15,6 +12,7 @@ interface FormData {
 }
 
 export default function Contact() {
+  // Tipizzazione esplicita per useState
   const [formData, setFormData] = useState<FormData>({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("");
 
@@ -24,12 +22,12 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Tipizzazione corretta per l'evento di submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("Sending...");
 
     try {
-      // Invia i dati al tuo endpoint API locale
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -50,22 +48,28 @@ export default function Contact() {
     }
   };
 
-  const containerVariants = {
+  // Definizioni delle varianti Framer Motion (SENZA la transizione)
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, type: "spring" } },
+    visible: { opacity: 1, y: 0 },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
+    visible: { opacity: 1, y: 0 },
   };
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 font-mono" style={{ backgroundColor: "#000000", color: "#f3f4f6" }}>
+    <section 
+      className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 font-mono" 
+      style={{ backgroundColor: "#000000", color: "#f3f4f6" }}
+    >
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
+        // Transizione applicata qui, come prop separata
+        transition={{ duration: 0.8, type: "spring" }} 
         className="flex flex-col items-center gap-6 text-center max-w-2xl w-full"
       >
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight drop-shadow-lg mb-2" style={{ color: "#22d3ee" }}>
@@ -73,7 +77,10 @@ export default function Contact() {
         </h1>
         <motion.p
           variants={itemVariants}
-          transition={{ delay: 0.2, ...itemVariants.visible.transition }}
+          initial="hidden"
+          animate="visible"
+          // Transizione applicata qui
+          transition={{ delay: 0.2, duration: 0.7 }}
           className="text-lg mb-4"
           style={{ color: "#d1d5db" }}
         >
@@ -83,7 +90,10 @@ export default function Contact() {
 
       <motion.div
         variants={itemVariants}
-        transition={{ delay: 0.4, ...itemVariants.visible.transition }}
+        initial="hidden"
+        animate="visible"
+        // Transizione applicata qui
+        transition={{ delay: 0.4, duration: 0.7 }}
         className="w-full max-w-md bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-md border border-cyan-800 rounded-2xl shadow-2xl p-8 mt-10"
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -146,7 +156,6 @@ export default function Contact() {
         )}
 
         <div className="flex justify-center gap-6 mt-8">
-          {/* Le icone qui sono corrette: le classi Tailwind sono sul tag <a> */}
           <a href="https://github.com/alfanoandrea" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition-colors">
             <FaGithub size={30} />
           </a>
