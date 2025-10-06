@@ -1,103 +1,201 @@
-import Image from "next/image";
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { FaGithub, FaArrowRight } from "react-icons/fa";
+import { useEffect, useState, useMemo } from "react";
+import "./home.css";
+
+const pad = (n: number) => (n < 10 ? "0" + n : String(n));
+const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+function formatAsUnixLike(date: Date) {
+  const dayName = dayNames[date.getDay()];
+  const month = monthNames[date.getMonth()];
+  const day = date.getDate();
+  const hours = pad(date.getHours());
+  const mins = pad(date.getMinutes());
+  const secs = pad(date.getSeconds());
+  const year = date.getFullYear();
+  return `${dayName} ${month} ${day} ${hours}:${mins}:${secs} ${year}`;
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const openDate = useMemo(() => new Date(), []);
+  const formattedOpenDate = useMemo(() => formatAsUnixLike(openDate), [openDate]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const terminalLines = useMemo(() => [
+    "andrea@kali:~$ ssh andrea@portfolio",
+    "andrea@portfolio's password:",
+    "Password incorrect. Retrying...",
+    "andrea@portfolio's password:",
+    "Access granted.",
+    `Last login: ${formattedOpenDate} from 192.168.1.10`,
+    "Welcome to Andrea's digital portfolio!",
+  ], [formattedOpenDate]);
+
+  const [displayedLines, setDisplayedLines] = useState<string[]>([]);
+  const [currentLine, setCurrentLine] = useState("");
+  const [lineIndex, setLineIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [isPasswordTyping, setIsPasswordTyping] = useState(false);
+  const [passwordTyped, setPasswordTyped] = useState("");
+
+  useEffect(() => {
+    if (!isTyping || lineIndex >= terminalLines.length) {
+      setIsTyping(false);
+      return;
+    }
+
+    const line = terminalLines[lineIndex];
+
+    if (line.toLowerCase().includes("password:")) {
+      if (!isPasswordTyping) {
+        setIsPasswordTyping(true);
+        setCurrentLine(line);
+      }
+      if (passwordTyped.length < 8) {
+        const timeout = setTimeout(() => {
+          setPasswordTyped((prev) => prev + "*");
+        }, 80);
+        return () => clearTimeout(timeout);
+      } else {
+        const timeout = setTimeout(() => {
+          setDisplayedLines((prev) => [...prev, line, passwordTyped]);
+          setCurrentLine("");
+          setPasswordTyped("");
+          setLineIndex((prev) => prev + 1);
+          setIsPasswordTyping(false);
+        }, 1500);
+        return () => clearTimeout(timeout);
+      }
+    } else {
+      let charIndex = currentLine.length;
+      if (charIndex < line.length) {
+        const timeout = setTimeout(() => {
+          setCurrentLine((prev) => prev + line[charIndex]);
+        }, line.includes("incorrect") ? 50 : 30);
+        return () => clearTimeout(timeout);
+      } else {
+        const timeout = setTimeout(() => {
+          setDisplayedLines((prev) => [...prev, currentLine]);
+          setCurrentLine("");
+          setLineIndex((prev) => prev + 1);
+        }, 1000);
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [lineIndex, currentLine, isTyping, isPasswordTyping, passwordTyped, terminalLines]);
+
+  const renderLine = (line: string) => {
+    if (line.includes("andrea@kali:~$")) {
+      const parts = line.split("andrea@kali:~$");
+      const command = parts[1];
+      return (
+        <>
+          <span className="text-red-500">andrea@kali:</span>
+          <span className="text-gray-400">~</span>
+          <span className="text-red-500">$</span>
+          <span className="text-gray-300">{command}</span>
+        </>
+      );
+    }
+    return <span className="text-gray-300">{line}</span>;
+  };
+
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 bg-black text-gray-100 font-mono">
+      <motion.h1
+        initial={{ opacity: 0, scale: 0.8, y: -40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.8, type: "spring" }}
+        className="text-6xl md:text-7xl font-extrabold text-cyan-400 mb-10 tracking-tight text-center glitch"
+      >
+        &lt;alfanowski /&gt;
+      </motion.h1>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        className="w-full max-w-2xl bg-[#1e1e1e] border border-[#3c3c3c] rounded-xl shadow-lg mb-10 overflow-hidden"
+      >
+        <div className="flex items-center p-3 bg-[#333333] border-b border-[#4d4d4d] relative">
+          <div className="flex space-x-2">
+            <span className="w-3 h-3 bg-[#ff5f56] rounded-full"></span>
+            <span className="w-3 h-3 bg-[#ffbd2e] rounded-full"></span>
+            <span className="w-3 h-3 bg-[#27c93f] rounded-full"></span>
+          </div>
+          <span className="absolute left-1/2 -translate-x-1/2 text-gray-400 text-sm">
+            andrea@kali: ~
+          </span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+        <div className="p-6 text-[#f5f5f5] text-sm md:text-base leading-relaxed">
+          {displayedLines.map((line, idx) => (
+            <div key={idx} className="whitespace-pre-wrap">
+              {renderLine(line)}
+            </div>
+          ))}
+          {isTyping && (
+            <div className="whitespace-pre-wrap">
+              {isPasswordTyping ? (
+                <>
+                  <span className="text-gray-300">{currentLine}</span>
+                  <br />
+                  <span className="text-gray-300">{passwordTyped}</span>
+                </>
+              ) : (
+                renderLine(currentLine)
+              )}
+              <span className="cursor-blink text-[#27c93f]">█</span>
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, duration: 0.8 }}
+        className="flex gap-6 flex-wrap justify-center"
+      >
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          href="https://github.com/alfanoandrea"
           target="_blank"
           rel="noopener noreferrer"
+          className="flex items-center gap-2 border border-cyan-400 text-cyan-400 px-6 py-2 rounded-lg hover:bg-cyan-400 hover:text-black transition-colors font-semibold shadow"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          <FaGithub size={20} />
+          GitHub
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/projects"
+          className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          Projects
+          <FaArrowRight size={16} className="ml-1" />
+        </Link>
+        <Link
+          href="/about"
+          className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          About
+        </Link>
+      </motion.div>
+    </main>
   );
 }

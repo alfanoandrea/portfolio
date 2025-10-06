@@ -1,0 +1,32 @@
+// src/components/Footer.tsx
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+
+export default function Footer() {
+  return (
+    <footer className="w-full bg-black py-8 px-6 mt-20 font-mono text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="max-w-5xl mx-auto border-t border-gray-800 pt-8"
+      >
+        <div className="flex flex-col md:flex-row justify-center items-center gap-2 mb-4">
+          <Link
+            href="/privacy"
+            className="text-sm hover:underline"
+            style={{ color: "#9ca3af" }}
+          >
+            Privacy Policy
+          </Link>
+        </div>
+        <p className="text-sm" style={{ color: "#d1d5db" }}>
+          &copy; 2025 alfanowski. All Rights Reserved.
+        </p>
+      </motion.div>
+    </footer>
+  );
+}
