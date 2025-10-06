@@ -40,4 +40,7 @@ export default function PrivacyPolicy() {
       </p>
     </motion.div>
   );
-}
+} 
+
+
+// ho sonno
