@@ -9,24 +9,44 @@ export default function CookieConsentModal() {
   const [showBanner, setShowBanner] = useState(false);
   const pathname = usePathname();
 
+  // Nome del cookie che usiamo per tracciare il consenso
+  const CONSENT_COOKIE_NAME = "my-portfolio-cookie-consent";
+  const CONSENT_COOKIE_VALUE = "accepted"; // Valore che indica l'accettazione
+
   useEffect(() => {
-    // Controlla se il cookie esiste E se non siamo già sulla pagina della privacy
-    const hasConsent = document.cookie.includes("my-portfolio-cookie-consent");
+    // Controlla se il cookie esiste e se non siamo già sulla pagina della privacy
+    const hasConsent = document.cookie.includes(`${CONSENT_COOKIE_NAME}=${CONSENT_COOKIE_VALUE}`);
+
     if (!hasConsent && pathname !== "/privacy") {
       setShowBanner(true);
+      // Blocca lo scroll per forzare l'interazione
       document.body.style.overflow = "hidden";
+    } else {
+      // Se il consenso esiste, assicurati che lo scroll sia attivo (utile al caricamento)
+      document.body.style.overflow = "auto";
+      setShowBanner(false);
     }
-  }, [pathname]); // Aggiungi pathname come dipendenza per reagire al cambio di rotta
+  }, [pathname]);
 
   const handleAccept = () => {
+    // *** CORREZIONE CRITICA: SCRIVI IL COOKIE CON UNA SCADENZA ***
+    const expiryDate = new Date();
+    // Imposta la scadenza a 365 giorni
+    expiryDate.setTime(expiryDate.getTime() + (365 * 24 * 60 * 60 * 1000));
+
+    // Scrive il cookie, rendendolo valido su tutto il sito (path=/) e persistente (expires)
+    document.cookie = `${CONSENT_COOKIE_NAME}=${CONSENT_COOKIE_VALUE}; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax;`;
+    
+    // Chiude il banner e riabilita lo scroll
     setShowBanner(false);
     document.body.style.overflow = "auto";
   };
 
   const handleDecline = () => {
+    // Al rifiuto, semplicemente chiudiamo il banner senza salvare il consenso.
+    // Il banner riapparirà alla prossima sessione/visita finché non viene accettato.
     setShowBanner(false);
     document.body.style.overflow = "auto";
-    // Qui puoi implementare la logica per disabilitare i cookie non essenziali.
   };
 
   if (!showBanner) {
