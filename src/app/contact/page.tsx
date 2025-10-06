@@ -4,17 +4,27 @@
 import { motion } from "framer-motion";
 import { FaGithub, FaEnvelope, FaInstagram } from "react-icons/fa";
 import { useState } from "react";
+// Non è necessario importare React per la tipizzazione qui, 
+// ma lo facciamo per coerenza con la tua struttura.
+import React from 'react'; 
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formData, setFormData] = useState<FormData>({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("");
 
-  const handleChange = (e) => {
+  // Tipizzazione corretta per l'evento di cambio di input
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("Sending...");
 
@@ -136,6 +146,7 @@ export default function Contact() {
         )}
 
         <div className="flex justify-center gap-6 mt-8">
+          {/* Le icone qui sono corrette: le classi Tailwind sono sul tag <a> */}
           <a href="https://github.com/alfanoandrea" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-500 transition-colors">
             <FaGithub size={30} />
           </a>

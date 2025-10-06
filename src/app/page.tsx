@@ -1,12 +1,16 @@
+// src/app/home/page.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+// Importa React per la tipizzazione standard
+import React, { useEffect, useState, useMemo } from "react";
 import { FaGithub, FaArrowRight } from "react-icons/fa";
-import { useEffect, useState, useMemo } from "react";
 import "./home.css";
 
-const pad = (n: number) => (n < 10 ? "0" + n : String(n));
+// --- Funzioni di supporto (corrette) ---
+
+const pad = (n: number): string => (n < 10 ? "0" + n : String(n));
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthNames = [
   "Jan",
@@ -23,7 +27,7 @@ const monthNames = [
   "Dec",
 ];
 
-function formatAsUnixLike(date: Date) {
+function formatAsUnixLike(date: Date): string {
   const dayName = dayNames[date.getDay()];
   const month = monthNames[date.getMonth()];
   const day = date.getDate();
@@ -34,11 +38,14 @@ function formatAsUnixLike(date: Date) {
   return `${dayName} ${month} ${day} ${hours}:${mins}:${secs} ${year}`;
 }
 
+// --- Componente Home (Corretto) ---
+
 export default function Home() {
   const openDate = useMemo(() => new Date(), []);
   const formattedOpenDate = useMemo(() => formatAsUnixLike(openDate), [openDate]);
 
-  const terminalLines = useMemo(() => [
+  // Tipizzazione esplicita per terminalLines
+  const terminalLines: string[] = useMemo(() => [
     "andrea@kali:~$ ssh andrea@portfolio",
     "andrea@portfolio's password:",
     "Password incorrect. Retrying...",
@@ -48,6 +55,7 @@ export default function Home() {
     "Welcome to Andrea's digital portfolio!",
   ], [formattedOpenDate]);
 
+  // Tipizzazione esplicita per useState
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
   const [currentLine, setCurrentLine] = useState("");
   const [lineIndex, setLineIndex] = useState(0);
@@ -101,7 +109,7 @@ export default function Home() {
     }
   }, [lineIndex, currentLine, isTyping, isPasswordTyping, passwordTyped, terminalLines]);
 
-  const renderLine = (line: string) => {
+  const renderLine = (line: string): React.ReactNode => { // Tipizzazione del valore di ritorno
     if (line.includes("andrea@kali:~$")) {
       const parts = line.split("andrea@kali:~$");
       const command = parts[1];
@@ -183,12 +191,15 @@ export default function Home() {
           GitHub
         </a>
         <Link
-          href="/projects"
-          className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
-        >
-          Projects
-          <FaArrowRight size={16} className="ml-1" />
-        </Link>
+  href="/projects"
+  className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
+>
+  Projects
+  {/* Soluzione: Usa un wrapper <span> per applicare il margine  */}
+  <span className="ml-1">
+    <FaArrowRight size={16} /> 
+  </span>
+</Link>
         <Link
           href="/about"
           className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"

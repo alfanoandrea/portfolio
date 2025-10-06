@@ -1,3 +1,4 @@
+// src/app/about/page.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -8,7 +9,9 @@ import {
 import {
   SiC, SiCplusplus, SiDotnet, SiHtml5, SiCss3, SiJavascript, SiTypescript, SiSqlite, SiMetasploit, SiAirplayaudio
 } from "react-icons/si";
+import React from 'react'; // Importa React per la tipizzazione
 
+// Definizione delle skill
 const softwareSkills = [
   { name: "C", icon: <SiC size={40} color="#60a5fa" /> },
   { name: "C++", icon: <SiCplusplus size={40} color="#60a5fa" /> },
@@ -40,17 +43,24 @@ const cyberSkills = [
   { name: "Phishing", icon: <FaBug size={40} color="#f87171" /> },
 ];
 
+interface Skill {
+  name: string;
+  icon: React.ReactNode;
+}
+
+interface SkillSectionProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  skills: Skill[];
+}
+
 function SkillSection({
   title,
   description,
   icon,
   skills,
-}: {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  skills: any[];
-}) {
+}: SkillSectionProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -105,7 +115,14 @@ export default function About() {
         className="flex flex-col items-center gap-6"
       >
         <div className="flex flex-col items-center gap-2">
-          <FaTerminal size={64} color="#22d3ee" className="drop-shadow-lg mb-2" />
+          {/* Correzione dell'errore di tipizzazione: FaTerminal è avvolto in uno span */}
+          <span 
+            className="drop-shadow-lg mb-2"
+            style={{ color: "#22d3ee" }}
+          >
+            <FaTerminal size={64} />
+          </span>
+
           <h1
             className="text-5xl md:text-6xl font-extrabold tracking-tight text-center drop-shadow-lg mb-2"
             style={{ color: "#22d3ee" }}

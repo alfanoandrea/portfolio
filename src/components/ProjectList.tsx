@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { FaGithub, FaStar, FaCodeBranch } from "react-icons/fa";
 import { SiTypescript, SiJavascript, SiPython, SiC, SiCplusplus, SiReact, SiNextdotjs } from "react-icons/si";
+import React from 'react'; // Importa React
 
 type Repo = {
   id: number;
@@ -13,6 +14,7 @@ type Repo = {
   stargazers_count: number;
 };
 
+// Tipizzazione esplicita per le icone per chiarezza
 const langIcons: { [key: string]: React.ReactNode } = {
   TypeScript: <SiTypescript />,
   JavaScript: <SiJavascript />,
@@ -44,10 +46,15 @@ function ProjectCard({ repo }: { repo: Repo }) {
             </h3>
             <span className="text-gray-400 group-hover:text-cyan-400 transition-colors duration-300">{icon}</span>
           </div>
+          
+          {/* CORREZIONE: La classe drop-shadow è stata spostata sul <span> esterno all'icona */}
           <span className="flex items-center gap-1 text-yellow-400 font-semibold text-sm">
-            <FaStar className="drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]" />
+            <span className="drop-shadow-[0_0_5px_rgba(251,191,36,0.5)]">
+              <FaStar /> 
+            </span>
             {repo.stargazers_count}
           </span>
+
         </div>
         <p className="text-gray-400 text-sm mb-4 line-clamp-3">
           {repo.description || "Nessuna descrizione disponibile."}
