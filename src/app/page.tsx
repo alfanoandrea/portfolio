@@ -133,7 +133,7 @@ export default function Home() {
         transition={{ duration: 0.8, type: "spring" }}
         className="text-6xl md:text-7xl font-extrabold text-cyan-400 mb-10 tracking-tight text-center glitch"
       >
-        &lt;alfanowski /&gt;
+        alfanowski
       </motion.h1>
 
       <motion.div

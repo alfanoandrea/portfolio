@@ -37,7 +37,7 @@ export default function Navbar() {
       <header ref={navbarRef} className="w-full border-b border-gray-800 fixed top-0 bg-black z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-cyan-400 text-lg font-bold">
-            &lt;alfanowski /&gt;
+            alfanowski
           </Link>
 
           {/* Menu Desktop */}
@@ -97,7 +97,7 @@ export default function Navbar() {
                 <Link href="/" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">Home</Link>
                 <Link href="/about" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">About</Link>
                 <Link href="/projects" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">Projects</Link>
-                <Link href="/notes" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">Security Notes</Link>
+                <Link href="/contact" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">Contact</Link>
                 <a href="https://github.com/alfanoandrea" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-cyan-300 transition-colors">
                   <FaGithub size={20} />
                   GitHub
