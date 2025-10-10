@@ -3,42 +3,41 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { FaGithub, FaBars, FaTimes } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion"; 
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navbarRef = useRef<HTMLDivElement>(null);
 
-  // NUOVE VARIANTI: usiamo 'height' per un'animazione di apertura/chiusura più fluida
-  const menuVariants = {
+  const menuVariants: Variants = { 
     hidden: { 
       opacity: 0, 
-      height: 0, // Inizia da altezza zero
+      height: 0,
       transition: { 
-        when: "afterChildren", // Nasconde i figli dopo che l'animazione genitore è finita
+        when: "afterChildren",
         duration: 0.2 
       } 
     },
     visible: { 
       opacity: 1, 
-      height: "auto", // Si espande all'altezza del contenuto
+      height: "auto",
       transition: { 
-        when: "beforeChildren", // Mostra i figli solo dopo che l'animazione genitore è iniziata
+        when: "beforeChildren",
         duration: 0.3, 
-        ease: "easeInOut" 
+        ease: "easeInOut",
+        staggerChildren: 0.07, 
+        delayChildren: 0.1 
       } 
     },
   };
   
-  // Varianti per gli elementi interni del menu (opzionale, per un tocco in più)
-  const itemVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
+  const itemVariants: Variants = {
+    hidden: { y: -20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
   };
 
 
   useEffect(() => {
-    // Logica di chiusura al click esterno (nessuna modifica)
     const handleOutsideClick = (event: MouseEvent) => {
       if (navbarRef.current && !navbarRef.current.contains(event.target as Node)) {
         setOpen(false);
@@ -64,9 +63,8 @@ export default function Navbar() {
             alfanowski
           </Link>
 
-          {/* ... Menu Desktop (Nessuna modifica) ... */}
+          {/* Menu Desktop (Omesso per brevità, nessun cambio) */}
           <nav className="hidden md:flex gap-8 items-center text-gray-300">
-            {/* ... i tuoi Link ... */}
             <Link href="/" className="relative hover:text-cyan-300 transition-colors group">
               Home
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-cyan-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
@@ -116,14 +114,13 @@ export default function Navbar() {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              variants={menuVariants}
-              // Overflow-hidden è cruciale per animare l'altezza correttamente!
+              variants={menuVariants} // menuVariants tipizzato
               className="md:hidden border-t border-gray-800 bg-black/90 overflow-hidden" 
             >
               <div 
                 className="px-6 py-4 flex flex-col gap-4 text-gray-300 text-lg font-medium items-center"
               >
-                {/* Usiamo itemVariants qui per una micro-animazione degli elementi */}
+                {/* Applichiamo itemVariants ai singoli motion.div */}
                 <motion.div variants={itemVariants}>
                   <Link href="/" onClick={() => setOpen(false)} className="hover:text-cyan-300 transition-colors">Home</Link>
                 </motion.div>
@@ -148,17 +145,16 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
 
-      {/* OVERLAY SEMI-TRASPARENTE (NON DEVI MODIFICARE LA LOGICA, MA LA TRANSIZIONE) */}
-      {/* Manteniamo l'overlay separato, ma assicuriamoci che le sue transizioni siano sincronizzate */}
+      {/* OVERLAY SEMI-TRASPARENTE (Nessuna modifica) */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }} // Stessa durata della transizione del menu
+            transition={{ duration: 0.3 }}
             className="fixed top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm z-40 md:hidden"
-            onClick={() => setOpen(false)} // Chiude il menu cliccando sull'overlay
+            onClick={() => setOpen(false)}
           />
         )}
       </AnimatePresence>

@@ -1,9 +1,7 @@
-// src/app/home/page.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-// Importa React per la tipizzazione standard
 import React, { useEffect, useState, useMemo } from "react";
 import { FaGithub, FaArrowRight } from "react-icons/fa";
 import "./home.css";
@@ -38,7 +36,7 @@ function formatAsUnixLike(date: Date): string {
   return `${dayName} ${month} ${day} ${hours}:${mins}:${secs} ${year}`;
 }
 
-// --- Componente Home (Corretto) ---
+// --- Componente Home ---
 
 export default function Home() {
   const openDate = useMemo(() => new Date(), []);
@@ -79,7 +77,7 @@ export default function Home() {
       if (passwordTyped.length < 8) {
         const timeout = setTimeout(() => {
           setPasswordTyped((prev) => prev + "*");
-        }, 80);
+        }, 50); // Velocità password
         return () => clearTimeout(timeout);
       } else {
         const timeout = setTimeout(() => {
@@ -88,7 +86,7 @@ export default function Home() {
           setPasswordTyped("");
           setLineIndex((prev) => prev + 1);
           setIsPasswordTyping(false);
-        }, 1500);
+        }, 500); // Ritardo post-password
         return () => clearTimeout(timeout);
       }
     } else {
@@ -96,20 +94,23 @@ export default function Home() {
       if (charIndex < line.length) {
         const timeout = setTimeout(() => {
           setCurrentLine((prev) => prev + line[charIndex]);
-        }, line.includes("incorrect") ? 50 : 30);
+          // Velocità digitazione: 40ms per 'incorrect', 20ms standard
+        }, line.includes("incorrect") ? 40 : 20); 
         return () => clearTimeout(timeout);
       } else {
         const timeout = setTimeout(() => {
           setDisplayedLines((prev) => [...prev, currentLine]);
           setCurrentLine("");
           setLineIndex((prev) => prev + 1);
-        }, 1000);
+        }, 500); // Ritardo tra le righe
         return () => clearTimeout(timeout);
       }
     }
   }, [lineIndex, currentLine, isTyping, isPasswordTyping, passwordTyped, terminalLines]);
 
-  const renderLine = (line: string): React.ReactNode => { // Tipizzazione del valore di ritorno
+
+  // RISOLUZIONE: renderLine definita all'interno del componente prima del return
+  const renderLine = (line: string): React.ReactNode => {
     if (line.includes("andrea@kali:~$")) {
       const parts = line.split("andrea@kali:~$");
       const command = parts[1];
@@ -122,6 +123,14 @@ export default function Home() {
         </>
       );
     }
+    // Colori per i messaggi di sistema
+    if (line.includes("incorrect")) {
+        return <span className="text-red-400">{line}</span>;
+    }
+    if (line.includes("Access granted")) {
+        return <span className="text-green-400">{line}</span>;
+    }
+
     return <span className="text-gray-300">{line}</span>;
   };
 
@@ -191,15 +200,15 @@ export default function Home() {
           GitHub
         </a>
         <Link
-  href="/projects"
-  className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
->
-  Projects
-  {/* Soluzione: Usa un wrapper <span> per applicare il margine  */}
-  <span className="ml-1">
-    <FaArrowRight size={16} /> 
-  </span>
-</Link>
+          href="/projects"
+          className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
+        >
+          Projects
+          {/* Soluzione: Usa un wrapper <span> per applicare il margine  */}
+          <span className="ml-1">
+            <FaArrowRight size={16} /> 
+          </span>
+        </Link>
         <Link
           href="/about"
           className="flex items-center gap-2 border border-gray-700 px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors font-semibold text-gray-300 shadow"
