@@ -13,7 +13,8 @@ export default function Footer() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="max-w-5xl mx-auto border-t border-gray-800 pt-8"
       >
-        <div className="flex flex-col md:flex-row justify-center items-center gap-2 mb-4">
+        {/* MODIFICA: flex-col rimosso/sostituito per mantenere i link sulla stessa riga ovunque */}
+        <div className="flex flex-row justify-center items-center gap-2 mb-4">
           
           {/* Link Privacy Policy Iubenda */}
           <a
