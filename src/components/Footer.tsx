@@ -2,7 +2,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -15,13 +14,26 @@ export default function Footer() {
         className="max-w-5xl mx-auto border-t border-gray-800 pt-8"
       >
         <div className="flex flex-col md:flex-row justify-center items-center gap-2 mb-4">
-          <Link
-            href="/privacy"
-            className="text-sm hover:underline"
+          
+          {/* Link Privacy Policy Iubenda */}
+          <a
+            href="https://www.iubenda.com/privacy-policy/78496253"
+            className="text-sm hover:underline iubenda-black iubenda-noiframe iubenda-embed iubenda-noiframe"
             style={{ color: "#9ca3af" }}
+            title="Privacy Policy"
           >
             Privacy Policy
-          </Link>
+          </a>
+
+          {/* Link Cookie Policy Iubenda */}
+          <a
+            href="https://www.iubenda.com/privacy-policy/78496253/cookie-policy"
+            className="text-sm hover:underline iubenda-black iubenda-noiframe iubenda-embed iubenda-noiframe"
+            style={{ color: "#9ca3af" }}
+            title="Cookie Policy"
+          >
+            Cookie Policy
+          </a>
         </div>
         <p className="text-sm" style={{ color: "#d1d5db" }}>
           &copy; 2025 alfanowski. All Rights Reserved.

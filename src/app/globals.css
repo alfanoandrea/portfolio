@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
-
 :root {
   --background: #ffffff;
   --foreground: #000000;
 }
-
 
 @theme inline {
   --color-background: var(--background);
@@ -34,4 +32,9 @@ body {
 
 .animate-blink {
   animation: blink 1s infinite;
+}
+
+html, body {
+  background-color: #000 !important;
+  color-scheme: dark;
 }
